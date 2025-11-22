@@ -1,11 +1,19 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.urls import reverse
+from django.utils.html import format_html
 
 class ChatSession(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, default="New Chat")
     created_at = models.DateTimeField(default=timezone.now)
+
+    def admin_messages_link(self):
+        url = reverse("admin:chat_chatsession_change", args=[self.id])
+        return format_html('<a href="{}">View Messages</a>', url)
+    
+    admin_messages_link.short_description = "Messages"
 
     def __str__(self):
         return f"{self.user.username} - {self.title}"

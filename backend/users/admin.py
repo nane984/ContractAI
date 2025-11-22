@@ -1,6 +1,22 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User
+from chat.models import ChatSession
+
+class ChatSessionInline(admin.TabularInline):
+    model = ChatSession
+    extra = 0
+    readonly_fields = ("title", "created_at", "admin_messages_link")
+    fields = ("title", "created_at", "admin_messages_link")
+    can_delete = False              # ne može da briše
+
+    def has_add_permission(self, request, obj=None):
+        # Onemogućava dodavanje novih poruka
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        # Onemogućava izmene postojećih poruka
+        return False
 
 class CustomUserAdmin(UserAdmin):
     model = User
@@ -49,5 +65,6 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
 
+    inlines = [ChatSessionInline]
 
 admin.site.register(User, CustomUserAdmin)
