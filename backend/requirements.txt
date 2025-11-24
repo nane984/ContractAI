@@ -2,13 +2,12 @@ Django>=4.2
 djangorestframework
 djangorestframework-simplejwt
 psycopg2-binary
-celery[redis]
+celery
+redis
 django-celery-beat
 python-dotenv
-pytest
-pytest-django
 requests
 bcrypt
-selenium
 gunicorn
 django-cors-headers
+Pillow

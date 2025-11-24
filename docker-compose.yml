@@ -1,0 +1,95 @@
+version: "3.9"
+
+services:
+  # -----------------------
+  # Backend (Django)
+  # -----------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: contractai-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - backend/.env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - contractai-network
+    restart: always
+
+  # -----------------------
+  # Frontend (React)
+  # -----------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: contractai-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - contractai-network
+
+  # -----------------------
+  # PostgreSQL Database
+  # -----------------------
+  db:
+    image: postgres:15-alpine
+    container_name: contractai-db
+    environment:
+      - POSTGRES_USER=contractai
+      - POSTGRES_PASSWORD=CHANGE_ME_PASSWORD
+      - POSTGRES_DB=contractai_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - contractai-network
+    restart: always
+
+  # -----------------------
+  # Redis (Celery broker)
+  # -----------------------
+  redis:
+    image: redis:7-alpine
+    container_name: contractai-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - contractai-network
+
+  # -----------------------
+  # Celery Worker
+  # -----------------------
+  celery:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: contractai-celery
+    command: celery -A backend worker --loglevel=info
+    env_file:
+      - backend/.env
+    depends_on:
+      - backend
+      - redis
+    networks:
+      - contractai-network
+
+# -----------------------
+# Volumes
+# -----------------------
+volumes:
+  db_data:
+
+# -----------------------
+# Network
+# -----------------------
+networks:
+  contractai-network:
+    driver: bridge

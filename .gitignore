@@ -10,9 +10,15 @@ venv/
 *.log
 *.pot
 *.py[cod]
+*.mo
 
 # Node / React
 node_modules/
-build/
-.env
+frontend/build/
+frontend/.env
+
+# Backend env
+backend/.env
+
+# macOS
 .DS_Store
