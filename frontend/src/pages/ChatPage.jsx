@@ -23,9 +23,9 @@ const ChatPage = () => {
       {/* Sidebar */}
       <div
         className={`
-          bg-white shadow-lg p-4 overflow-y-auto max-h-screen
+          bg-white shadow-lg overflow-y-auto max-h-screen
           md:w-64 md:flex md:relative sidebar
-          fixed inset-y-0 left-0 z-40 transform 
+          fixed left-0 z-40 transform 
            ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
           transition-transform duration-300
           scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100
